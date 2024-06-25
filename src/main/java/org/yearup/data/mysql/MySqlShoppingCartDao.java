@@ -47,15 +47,16 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
 
     @Override
-    public void addProductToCart(int userId, ShoppingCartItem item) {
+    public void addItemToCart(int userId, int productId) {
 
-        String sql = "INSERT INTO shopping_cart (user_id, product_id, quantity) Values (?,?,?)";
+        String sql = "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (?, ?, 1)";
 
-        try (Connection connection = getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, item.getProductId());
-            preparedStatement.setInt(3,item.getQuantity());
+            preparedStatement.setInt(2, productId);
+
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -64,7 +65,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
 
     @Override
-    public void updateCartProductQuantity(int userId, ShoppingCartItem item) {
+    public void updateCartItemQuantity(int userId, ShoppingCartItem item) {
 
         String sql = "UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
 
@@ -72,7 +73,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, item.getQuantity());
             preparedStatement.setInt(2, userId);
-            preparedStatement.setInt(3,item.getProductId());
+            preparedStatement.setInt(3, item.getProductId());
 
             preparedStatement.executeUpdate();
 
@@ -99,18 +100,12 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
     }
 
-    private ShoppingCartItem mapRow(ResultSet row) throws SQLException
-    {
-        int productId = row.getInt("product_id");
-        int quantity = row.getInt("quantity");
+    private ShoppingCartItem mapRow(ResultSet resultSet) throws SQLException {
+        int productId = resultSet.getInt("product_id");
+        int quantity = resultSet.getInt("quantity");
 
         Product product = productDao.getById(productId);
-
-        ShoppingCartItem item = new ShoppingCartItem();
-        item.setProduct(product);
-        item.setQuantity(quantity);
-
-        return item;
+        return new ShoppingCartItem(product, quantity);
     }
 
 

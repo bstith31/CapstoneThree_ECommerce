@@ -69,14 +69,14 @@ public class ShoppingCartController
             // find database user by userId
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
+//
+//            Product product = productDao.getById(productId);
+//
+//            ShoppingCartItem item = new ShoppingCartItem();
+//            item.setProduct(product);
+//            item.setQuantity(1);
 
-            Product product = productDao.getById(productId);
-
-            ShoppingCartItem item = new ShoppingCartItem();
-            item.setProduct(product);
-            item.setQuantity(1);
-
-            shoppingCartDao.addProductToCart(userId, item);
+            shoppingCartDao.addItemToCart(userId, productId);
         }
         catch(Exception e)
         {
@@ -100,9 +100,9 @@ public class ShoppingCartController
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
 
-            Product product = productDao.getById(productId);
+//            Product product = productDao.getById(productId);
 
-            shoppingCartDao.updateCartProductQuantity(userId, item);
+            shoppingCartDao.updateCartItemQuantity(userId, item);
         }
         catch(Exception e)
         {
