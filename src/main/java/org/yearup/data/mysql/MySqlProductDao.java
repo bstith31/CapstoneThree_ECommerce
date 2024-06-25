@@ -22,37 +22,29 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String color)
     {
         List<Product> products = new ArrayList<>();
+        //Discuss the use of parameters and StringBuilder
+        List<Object> parameters = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM products WHERE 1=1");
 
-        String sql = "SELECT * FROM products " +
-                "WHERE (category_id = ? OR ? = -1) " +
-                "   AND (price <= ? OR ? = -1) " +
-                "   AND (color = ? OR ? = '') ";
+        addCondition(" AND category_id = ", categoryId, parameters, sql);
+        addCondition(" AND price >= ", minPrice, parameters, sql);
+        addCondition(" AND price <= ", maxPrice, parameters, sql);
+        addCondition(" AND color = ", color, parameters, sql);
 
-        categoryId = categoryId == null ? -1 : categoryId;
-        minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
-        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
-        color = color == null ? "" : color;
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql.toString())) {
 
-        try (Connection connection = getConnection())
-        {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, categoryId);
-            statement.setInt(2, categoryId);
-            statement.setBigDecimal(3, minPrice);
-            statement.setBigDecimal(4, minPrice);
-            statement.setString(5, color);
-            statement.setString(6, color);
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
 
             ResultSet row = statement.executeQuery();
 
-            while (row.next())
-            {
+            while (row.next()) {
                 Product product = mapRow(row);
                 products.add(product);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -221,5 +213,13 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         String imageUrl = row.getString("image_url");
 
         return new Product(productId, name, price, categoryId, description, color, stock, isFeatured, imageUrl);
+    }
+
+    //Come back to better describe this method
+    private void addCondition(String prefix, Object value, List<Object> params, StringBuilder sql) {
+        if (value != null) {
+            sql.append(prefix).append(" ?");
+            params.add(value);
+        }
     }
 }
