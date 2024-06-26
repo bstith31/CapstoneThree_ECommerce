@@ -45,7 +45,6 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
-    //Methods may be restructured to match create
     @Override
     public Profile getByUserId(int userId) {
 
@@ -66,12 +65,10 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
-   // @Override
-   // public void update(int userId, Profile profile) {
-
-    }
-
-    }
+    /*
+    @Override
+    public void update (int userId, Profile profile)
+     */
 
     @Override
     public void update(Profile profile) {
