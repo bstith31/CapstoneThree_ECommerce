@@ -6,6 +6,6 @@ import org.yearup.models.Profile;
 public interface ProfileDao
 {
     Profile create(Profile profile);
-    Profile getByUserId();
-    void update();
+    Profile getByUserId(int userId);
+    void update(Profile profile);
 }
