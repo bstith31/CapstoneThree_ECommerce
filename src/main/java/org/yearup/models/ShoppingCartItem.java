@@ -10,8 +10,10 @@ public class ShoppingCartItem
     private int quantity = 1;
     private BigDecimal discountPercent = BigDecimal.ZERO;
 
+
     public ShoppingCartItem() {}
 
+    //Example the use of this constructor and why it was added to the model
     public ShoppingCartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
