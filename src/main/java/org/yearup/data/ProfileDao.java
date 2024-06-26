@@ -7,5 +7,7 @@ public interface ProfileDao
 {
     Profile create(Profile profile);
     Profile getByUserId(int userId);
-    void update(int userId, Profile profile);
+    //could include int userId in signature
+    void update(Profile profile);
+    //could add a delete method as well
 }

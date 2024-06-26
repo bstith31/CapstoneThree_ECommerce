@@ -58,7 +58,9 @@ public class ProfileController {
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
 
-            profileDao.update(userId,profile);
+            profile.setUserId(userId);
+            profileDao.update(profile);
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
