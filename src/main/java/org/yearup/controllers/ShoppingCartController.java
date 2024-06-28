@@ -71,12 +71,7 @@ public class ShoppingCartController
             // find database user by userId
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
-//
-//            Product product = productDao.getById(productId);
-//
-//            ShoppingCartItem item = new ShoppingCartItem();
-//            item.setProduct(product);
-//            item.setQuantity(1);
+
 
             shoppingCartDao.addItemToCart(userId, productId);
             return shoppingCartDao.getByUserId(userId);
@@ -93,7 +88,7 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{productId}")
-    public void updateCartProductQuantity(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
+    public void updateCartProductQuantity(@PathVariable int productId, Principal principal){
 
         try
         {
@@ -105,7 +100,7 @@ public class ShoppingCartController
 
 //            Product product = productDao.getById(productId);
 
-            shoppingCartDao.updateCartItemQuantity(userId, item);
+            shoppingCartDao.updateCartItemQuantity(userId, productId);
         }
         catch(Exception e)
         {

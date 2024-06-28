@@ -4,5 +4,5 @@ import org.yearup.models.Order;
 
 public interface OrderDao {
 
-    Order create(Order order);
+    Order create();
 }
